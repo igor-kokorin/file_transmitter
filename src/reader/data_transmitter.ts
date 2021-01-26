@@ -27,6 +27,8 @@ export class DataTransmitter {
   }
 
   public async transmit (operation: DataTransferOperation) {
+    console.log(`Started transmitting file ${operation.fullPath}`);
+
     this.transport.connect();
 
     await this.operationStore.init();
@@ -45,17 +47,25 @@ export class DataTransmitter {
       offset += block.offset;
     });
 
-    this.transport.on('data_block_transfered', async () => {
-      await this.operationStore.decrementBlocksCount();
+    this.transport.on('data_block_written', async () => {
+      const remainingBlocks = await this.operationStore.decrementBlocksCount();
+
+      console.log(`read ${(((operation.blocksCount - remainingBlocks) / operation.blocksCount) * 100).toFixed(2)}% of blocks (total blocks = ${operation.blocksCount}, block size = ${operation.blockSizeInBytes})`);
+
+      if (remainingBlocks === 0) {
+        this.transport.completeTransferOperation(operation.hash);
+      }
     });
 
     this.transport.on('data_block_transfer_timeout', async (block) => {
-      //await this.operationStore.enqueueBlock(block);
+      console.log('block timed out');
+      await this.operationStore.enqueueBlock(block);
     });
+
+    this.transport.listenForDataBlockWritten();
 
     while (true) {
       const block = await this.operationStore.dequeueBlock();
-      const len = await this.operationStore.queueLength();
 
       if (!block) {
         continue;
@@ -66,8 +76,6 @@ export class DataTransmitter {
       const remainingBlocks = await this.operationStore.getBlocksCount();
 
       if (remainingBlocks === 0) {
-        this.transport.completeTransferOperation(operation.hash);
-
         break;
       }
     }

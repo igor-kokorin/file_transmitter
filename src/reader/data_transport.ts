@@ -11,4 +11,6 @@ export interface DataTransport extends EventEmitter {
   completeTransferOperation(hash: string);
 
   transferBlockOfData(block: string);
+
+  listenForDataBlockWritten();
 };

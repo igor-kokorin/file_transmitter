@@ -19,6 +19,8 @@ export class DataReceiver {
   }
 
   public async receive () {
+    console.log('Started listening for incoming file');
+
     this.listener.connect();
 
     this.listener.on('data_transfer_begin', async (data) => {
@@ -30,8 +32,8 @@ export class DataReceiver {
       this.listener.listenForTransferOperationEnd();
     });
 
-    this.writer.on('data_block_written', (block, replyTo) => {
-      this.listener.emit('data_block_written', block, replyTo);
+    this.writer.on('data_block_written', (blockNumber, replyTo) => {
+      this.listener.emit('data_block_written', blockNumber, replyTo);
     });
 
     this.writer.on('pause_data_transfer', () => {
@@ -41,7 +43,6 @@ export class DataReceiver {
     this.writer.on('resume_data_transfer', () => {
       this.listener.emit('resume_data_transfer');
     });
-
 
     this.listener.on('data_block_received', (block, replyTo) => {
       this.writer.writeBlock(block, replyTo);

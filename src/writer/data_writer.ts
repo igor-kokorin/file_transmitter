@@ -20,7 +20,7 @@ export class DataWriter extends EventEmitter {
   }
 
   async init (operation: DataTransferOperation) {
-    this.filePath = path.join(this.filesDir, `${operation.hash}.${operation.extension}`)
+    this.filePath = path.join(this.filesDir, operation.extension ? `${operation.hash}.${operation.extension}` : operation.hash)
 
     this.fileHandle = await fs.promises.open(this.filePath, 'w');
   }
@@ -32,12 +32,12 @@ export class DataWriter extends EventEmitter {
   }
 
   writeBlock (block: DataBlock, receiver: string) {
-    const ws = fs.createWriteStream(this.filePath, {
-      fd: this.fileHandle.fd,
-      start: block.offset,
-      highWaterMark: block.sizeInBytes
-    });
+    fs.write(this.fileHandle.fd, Buffer.from(block.block, 'base64'), 0, null, block.offset, (err) => {
+      if (err) {
+        return;
+      }
 
-    ws.write(Buffer.from(block.block, 'base64'), () => this.emit('data_block_written', block, receiver));
+      this.emit('data_block_written', block.blockNumber, receiver);
+    });
   }
 }

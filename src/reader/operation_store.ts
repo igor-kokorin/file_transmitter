@@ -31,8 +31,8 @@ export class OperationStore {
     return block;
   }
 
-  async decrementBlocksCount () {
-    await this.redis.decr(`${this.operation.hash}/blocksCount`);
+  async decrementBlocksCount (): Promise<number> {
+    return this.redis.decr(`${this.operation.hash}/blocksCount`);
   }
 
   async queueLength (): Promise<number> {

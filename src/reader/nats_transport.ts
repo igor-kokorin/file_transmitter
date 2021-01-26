@@ -31,16 +31,18 @@ export class NatsTransport extends EventEmitter implements DataTransport {
     this.client.publish('data_transfer_end', hash);
   }
 
+  listenForDataBlockWritten () {
+    this.client.subscribe('data_block_written', () => this.emit('data_block_written'));
+  }
+
   transferBlockOfData (block: string) {
     process.nextTick(() => {
-      this.client.request('write_data_block', block, { timeout: 10000 }, async (msg) => {
+      this.client.request('write_data_block', block, { max: 1, timeout: 10000 }, async (msg) => {
         if (msg instanceof NATS.NatsError && msg.code === NATS.REQ_TIMEOUT) {
-          this.emit('data_block_transfer_timeout');
+          this.emit('data_block_transfer_timeout', block);
   
           return;
         }
-  
-        this.emit('data_block_transfered', msg);
       });
     });
   }

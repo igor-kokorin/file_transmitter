@@ -39,7 +39,7 @@ export class DataTransferOperation {
       fullPath,
       hash,
       sizeInBytes,
-      extension: path.extname(fullPath),
+      extension: path.extname(fullPath).split('.')[1] || null,
       blockSizeInBytes: transport.blockSizeInBytes,
       blocksCount: Math.ceil(sizeInBytes / transport.blockSizeInBytes)
     });
