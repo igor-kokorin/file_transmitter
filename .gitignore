@@ -1,0 +1,4 @@
+node_modules
+dist
+src/reader/files
+src/writer/files
