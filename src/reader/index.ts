@@ -4,9 +4,11 @@ import { DataTransmitter } from './data_transmitter';
 import { NatsTransport } from './nats_transport';
 import * as path from 'path';
 import { OperationStore } from './operation_store';
+import { WsTransport } from './ws_transport';
 
 (async () => {
-  const transport = new NatsTransport();
+  //const transport = new NatsTransport();
+  const transport = new WsTransport();
 
   const filePath = path.join(__dirname, 'files', '1GB.bin')
 

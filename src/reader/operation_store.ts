@@ -18,7 +18,6 @@ export class OperationStore {
   async init () {
     await this.redis.del(`${this.operation.hash}/blocks`);
     await this.redis.set(`${this.operation.hash}/blocksCount`, this.operation.blocksCount);
-    await this.redis.set(`${this.operation.hash}/pause`, false);
   }
 
   async enqueueBlock (block: DataBlock | string) {
@@ -45,21 +44,5 @@ export class OperationStore {
     const blocksCount = Number(await this.redis.get(`${this.operation.hash}/blocksCount`));
 
     return blocksCount;
-  }
-
-  async setPause () {
-    console.log('On pause');
-    await this.redis.set(`${this.operation.hash}/pause`, true);
-  }
-
-  async setResume () {
-    console.log('On resume');
-    await this.redis.set(`${this.operation.hash}/pause`, false);
-  }
-
-  async isPaused (): Promise<Boolean> {
-    const paused = JSON.parse(await this.redis.get(`${this.operation.hash}/pause`));
-
-    return paused;
   }
 }

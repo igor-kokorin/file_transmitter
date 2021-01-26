@@ -36,14 +36,6 @@ export class DataReceiver {
       this.listener.emit('data_block_written', blockNumber, replyTo);
     });
 
-    this.writer.on('pause_data_transfer', () => {
-      this.listener.emit('pause_data_transfer');
-    });
-
-    this.writer.on('resume_data_transfer', () => {
-      this.listener.emit('resume_data_transfer');
-    });
-
     this.listener.on('data_block_received', (block, replyTo) => {
       this.writer.writeBlock(block, replyTo);
     });
