@@ -12,7 +12,7 @@
         "<node_internals>/**"
       ],
       "runtimeExecutable": "ts-node",
-      "args": [ "${workspaceFolder}\\src\\reader\\index.ts" ]
+      "args": [ "${workspaceFolder}/src/reader/index.ts" ]
     },
     {
       "type": "pwa-node",
@@ -22,7 +22,7 @@
         "<node_internals>/**"
       ],
       "runtimeExecutable": "ts-node",
-      "args": [ "${workspaceFolder}\\src\\writer\\index.ts" ]
+      "args": [ "${workspaceFolder}/src/writer/index.ts" ]
     },
   ]
 }
