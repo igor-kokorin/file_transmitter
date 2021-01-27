@@ -16,7 +16,9 @@ export class WsTransport extends EventEmitter implements DataTransport {
   }
 
   connect () {
-    this.client = new WebSocket('http://localhost:8080');
+    this.client = new WebSocket('ws://localhost:8080');
+
+    this.client.on('open', () => console.log('Connected'));
 
     this.client.on('message', (message) => {
       this.parseMessage(message);
