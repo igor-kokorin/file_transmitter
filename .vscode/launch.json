@@ -24,5 +24,15 @@
       "runtimeExecutable": "ts-node",
       "args": [ "${workspaceFolder}/src/writer/index.ts" ]
     },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Launch Test",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeExecutable": "jest",
+      "outputCapture": "std"
+    },
   ]
 }

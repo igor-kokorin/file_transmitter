@@ -39,12 +39,8 @@ export class DataTransmitter {
 
     this.transport.beginTransferOperation(operation);
 
-    let offset = 0;
-
     this.reader.on('data_block', async (block) => {
       await this.operationStore.enqueueBlock(block);
-
-      offset += block.offset;
     });
 
     this.transport.on('data_block_written', async () => {

@@ -18,12 +18,10 @@ export class NatsTransport extends EventEmitter implements DataTransport {
   }
 
   beginTransferOperation (operation: DataTransferOperation) {
-    process.nextTick(() => {
-      this.client.request('data_transfer_begin', JSON.stringify({ extension: operation.extension, hash: operation.hash }), (canConsume) => {
-        if (JSON.parse(canConsume)) {
-         this.emit('data_transfer_begin');
-        }
-      });
+    this.client.request('data_transfer_begin', JSON.stringify({ extension: operation.extension, hash: operation.hash }), (canConsume) => {
+      if (JSON.parse(canConsume)) {
+        this.emit('data_transfer_begin');
+      }
     });
   }
 
@@ -36,14 +34,12 @@ export class NatsTransport extends EventEmitter implements DataTransport {
   }
 
   transferBlockOfData (block: string) {
-    process.nextTick(() => {
-      this.client.request('write_data_block', block, { max: 1, timeout: 10000 }, async (msg) => {
-        if (msg instanceof NATS.NatsError && msg.code === NATS.REQ_TIMEOUT) {
-          this.emit('data_block_transfer_timeout', block);
-  
-          return;
-        }
-      });
+    this.client.request('write_data_block', block, { max: 1, timeout: 10000 }, async (msg) => {
+      if (msg instanceof NATS.NatsError && msg.code === NATS.REQ_TIMEOUT) {
+        this.emit('data_block_transfer_timeout', block);
+
+        return;
+      }
     });
   }
 }

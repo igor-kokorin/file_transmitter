@@ -6,8 +6,8 @@ import { DataReceiver } from './data_receiver';
 import * as fs from 'fs';
 
 (async () => {
-  //const listener = new NatsListener();
-  const listener = new WsListener();
+  const listener = new NatsListener();
+  //const listener = new WsListener();
 
   const filePath = path.join(__dirname, 'files');
 
